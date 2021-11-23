@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IPost } from '../interfaces/post.interface';
-import { IUser } from '../interfaces/user.interface';
-import { User } from './user.model';
+import { IUser } from '../../user/interfaces/user.interface';
+import { User } from '../../user/models/user.model';
 
-export class PostResponse implements Omit<IPost, 'userId'> {
+export class PostWithUser implements Omit<IPost, 'userId'> {
   @ApiProperty()
   id: number;
   @ApiProperty()
@@ -16,15 +16,6 @@ export class PostResponse implements Omit<IPost, 'userId'> {
     this.id = id;
     this.title = title;
     this.body = body;
-    this.user = new User(
-      user?.id,
-      user?.name,
-      user?.username,
-      user?.email,
-      user?.address,
-      user?.phone,
-      user?.website,
-      user?.company,
-    );
+    this.user = new User(user?.id, user?.name, user?.username, user?.email);
   }
 }
