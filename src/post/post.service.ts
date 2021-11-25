@@ -44,14 +44,29 @@ export class PostService {
         pluck('data'),
         concatMap((post) =>
           this.httpService
-            .get<IUser[]>(
-              `https://jsonplaceholder.typicode.com/users?userId=${post.userId}`,
+            .get<IComment[]>(
+              `https://jsonplaceholder.typicode.com/comments?postId=${post.id}`,
             )
             .pipe(
               pluck('data'),
-              map(
-                (user) =>
-                  new PostWithUser(post.id, post.title, post.body, user[0]),
+              concatMap((comments) =>
+                this.httpService
+                  .get<IUser[]>(
+                    `https://jsonplaceholder.typicode.com/users?userId=${post.userId}`,
+                  )
+                  .pipe(
+                    pluck('data'),
+                    map(
+                      (user) =>
+                        new PostWithUser(
+                          post.id,
+                          post.title,
+                          post.body,
+                          user[0],
+                          comments,
+                        ),
+                    ),
+                  ),
               ),
             ),
         ),
